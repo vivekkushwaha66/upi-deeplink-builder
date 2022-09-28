@@ -29,7 +29,7 @@ export class DeepLink {
         if (!payeeName) throw new Error(EMPTY_PAYEE_NAME_ERROR)
         if (!payeeVpa) throw new Error(EMPTY_PAYEE_VPA_ERROR)
         this._payeeName = payeeName
-        this._payeeVpa = payeeName
+        this._payeeVpa = payeeVpa
         this._deepLink = 'upi://pay?'
         this.appendDeepLink(Codes.payeeName, this._payeeName, true)
         this.appendDeepLink(Codes.payeeVpa, this._payeeVpa)
@@ -112,12 +112,15 @@ export class DeepLink {
 
     private appendDeepLink(code: string, value: string, isFirstParam: boolean = false) {
         if (isFirstParam) {
-            this._deepLink.concat(`${code}=${value}`)
+            this._deepLink = this._deepLink.concat(`${code}=${value}`)
         } else {
-            this._deepLink.concat(`&${code}=${value}`)
+            this._deepLink = this._deepLink.concat(`&${code}=${value}`)
         }
     }
 
+    /**
+     * @returns string deeplink
+     */
     getDeepLink(): string {
         if (this._payeeMerchantCode) {
             this.appendDeepLink(Codes.merchantCode, this._payeeMerchantCode)
