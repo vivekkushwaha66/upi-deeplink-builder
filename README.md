@@ -1,103 +1,52 @@
-# TSDX User Guide
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+## @vivekkushwaha66/upi-deeplink-builder
+UPI is a real-time payment system developed by NPCI, with which funds can be transferred instantly to any bank account. Through Collect DeepLinks, that conform to NPCI specs, a merchant can enable their customers to directly go to a UPI app with pre-filled payment information.
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+Any business that wants to collect payments for goods or services provided to a customer using UPI DeepLinks.
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+Provide payment details and generate deep links that work across supported UPI apps. Your customers can make payments using any UPI app available on their phone, like PhonePe or GPay.
 
-## Commands
+## Link Specification and Parameters
+UPI Deep linking URL spec must be as follows.
 
-TSDX scaffolds your new library inside `/src`.
+**upi://pay?parm-name=param-value&param-name=pram-value&**
 
-To run TSDX, use:
+Where param-name can be any of the valid parameters (based on mandatory vs
+optional) listed in below table. M-Mandatory, C-Conditional, O-Optional
+|Parameter name  | Data type |Static mode Tags	|Dynamic mode Tags  |Mapped to UPI API field  |Description|
+|--|--|---|--|--|--|
+|pa|String  |M	|M  |Payee-->addr  |Payee VPA
+|pn|String  |M	|M |Payee-->name  |Payee name
+|mc|String  |O	| O |Payee-->mcc  |Payee merchant code If present then needs to be passed as it is.
+|tid|String  |O	| O |Txn -->id  |This must be PSP generated id when present. In the case of Merchant payments, merchant may acquire the txn id from his PSP. If present then needs to be passed as it is.
+|tr|String  |O	| C | Txn-->refId |Transaction reference ID. This could be order number, subscription number, Bill ID, booking ID, insurance renewal reference, etc. This field is Mandatory for Merchant transactions and dynamic URL generation.
+|tn|String  |O	| O |Txn-->note  |Transaction note providing a short description of the transaction.
+|am|String  |O	| O |Payee--> Amount-->value  |Transaction amount in decimal format. If ‘am’ is not present then field is editable.
+|mam|String  |O	| O |Txn -->Rules --> MINAMOUNT  |Minimum amount to be paid if different from transaction amount.
+|cu|String  |O	| O |Payee--> Amount-->curr  |Currency code. Currently ONLY "INR" is the supported value.
+|url|String  |O	| O |TxnrefUrl  |This should be a URL when clicked provides customer with further transaction details like complete bill details, bill copy, order copy, ticket details, etc. This can also be used to deliver digital goods such as mp3 files etc. after payment. This URL, when used, MUST BE related to the particular transaction and MUST NOT be used to send unsolicited information that are not relevant to the transaction. url should initiate with http or https.
 
-```bash
-npm start # or yarn start
-```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+### Usage
+    const { DeeplinkBuilder } = require('@vivekkushwaha66/upi-deeplink-builder')
+    const builder = new DeeplinkBuilder('payee name', 'payeevpa@upi')
+    const deepLink = builder.build()
 
-To do a one-off build, use `npm run build` or `yarn build`.
+### Other Methods
+| Method Name | Usage | Description |
+|--|--|--|
+|addMerchantCode  | `builder.addMerchantCode('merchantCode') ` |Payee merchant code
+|addTransactionId| `builder.addTransactionId('transactionId') ` |This must be PSP generated id when present. In the case of Merchant payments, merchant may acquire the txn id from his PSP. If present then needs to be passed as it is
+|addTransactionReferenceId| `builder.addTransactionReferenceId('refId') ` |Transaction reference ID. This could be order number, subscription number, Bill ID, booking ID, insurance renewal reference, etc. This field is Mandatory for Merchant transactions and dynamic URL generation
+|addTransactionNote| `builder.addTransactionNote('note') ` |Transaction note providing a short description of the transaction
+|addTransactionAmount| `builder.addTransactionAmount('amount') ` |Transaction amount in decimal format.
+|addMinimumAmount| `builder.addMinimumAmount('minimumAmount') ` |Minimum amount to be paid if different from transaction amount.
+|addCurrencyCode| `builder.addCurrencyCode('code') ` |* Currency code. Currently ONLY “INR” is the supported value
+|addUrl| `builder.addUrl('url') ` |This should be a URL when clicked provides customer with further transaction details like complete bill details, bill copy, order copy, ticket details, etc. This can also be used to deliver digital goods such as mp3 files etc. after payment. This URL, when used, MUST BE related to the particular transaction and MUST NOT be used to send unsolicited information that are not relevant to the transaction.
 
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
-```
-
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
+#### Above methods can be chained before calling build method. for ex:-
+    const { DeeplinkBuilder } = require('@vivekkushwaha66/upi-deeplink-builder')
+    const builder = new DeeplinkBuilder('Payee Name', 'payeevpa@upi')
+    builder.addTransactionAmount('20')
+    console.log(builder.build())
+    output: upi://pay?pn=Payee Name&pa=payeevpa@upi&am=20
