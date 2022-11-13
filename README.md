@@ -1,5 +1,7 @@
 
 ## @vivekkushwaha66/upi-deeplink-builder
+**Library is compatible with front end and backend**
+
 UPI is a real-time payment system developed by NPCI, with which funds can be transferred instantly to any bank account. Through Collect DeepLinks, that conform to NPCI specs, a merchant can enable their customers to directly go to a UPI app with pre-filled payment information.
 
 Any business that wants to collect payments for goods or services provided to a customer using UPI DeepLinks.
@@ -24,7 +26,7 @@ optional) listed in below table. M-Mandatory, C-Conditional, O-Optional
 |am|String  |O	| O |Payee--> Amount-->value  |Transaction amount in decimal format. If ‘am’ is not present then field is editable.
 |mam|String  |O	| O |Txn -->Rules --> MINAMOUNT  |Minimum amount to be paid if different from transaction amount.
 |cu|String  |O	| O |Payee--> Amount-->curr  |Currency code. Currently ONLY "INR" is the supported value.
-|url|String  |O	| O |TxnrefUrl  |This should be a URL when clicked provides customer with further transaction details like complete bill details, bill copy, order copy, ticket details, etc. This can also be used to deliver digital goods such as mp3 files etc. after payment. This URL, when used, MUST BE related to the particular transaction and MUST NOT be used to send unsolicited information that are not relevant to the transaction. url should initiate with http or https.
+|url|String  |O	| O |Txn-->refUrl  |This should be a URL when clicked provides customer with further transaction details like complete bill details, bill copy, order copy, ticket details, etc. This can also be used to deliver digital goods such as mp3 files etc. after payment. This URL, when used, MUST BE related to the particular transaction and MUST NOT be used to send unsolicited information that are not relevant to the transaction. url should initiate with http or https.
 
 
 ### Usage
