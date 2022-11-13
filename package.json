@@ -1,5 +1,5 @@
 {
-    "version": "0.1.0",
+    "version": "0.0.1",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -30,19 +30,23 @@
         "singleQuote": true,
         "trailingComma": "es5"
     },
-    "name": "upi-qr-code-generator",
+    "name": "@vivekkushwaha66/upi-deeplink-builder",
     "author": "Vivek Kushwaha",
-    "module": "dist/upi-qr-code-generator.esm.js",
+    "module": "dist/@vivekkushwaha66/upi-deeplink-builder.esm.js",
     "size-limit": [
         {
-            "path": "dist/upi-qr-code-generator.cjs.production.min.js",
+            "path": "dist/@vivekkushwaha66/upi-deeplink-builder.cjs.production.min.js",
             "limit": "10 KB"
         },
         {
-            "path": "dist/upi-qr-code-generator.esm.js",
+            "path": "dist/@vivekkushwaha66/upi-deeplink-builder.esm.js",
             "limit": "10 KB"
         }
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vivekkushwaha66/upi-deeplink-builder.git"
+    },
     "devDependencies": {
         "@size-limit/preset-small-lib": "^8.0.1",
         "husky": "^8.0.1",
